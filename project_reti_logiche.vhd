@@ -119,6 +119,8 @@ begin
         o_done <= '0';
         case cur_state is
             when S0 =>
+                read_address := 0;
+                write_address := 1000;
             when S1 =>
                 o_address <= STD_LOGIC_VECTOR(to_unsigned(read_address, o_address'length));
                 o_en <= '1';
@@ -127,7 +129,7 @@ begin
                 o_address <= STD_LOGIC_VECTOR(to_unsigned(read_address, o_address'length));
                 o_en <= '1';
                 r1_sel <= '1';
-                r2_load <= '1';
+                r1_load <= '1';
             when S3 =>
                 r2_load <= '1';
                 r2_sel <= '1';
@@ -152,8 +154,10 @@ begin
             when S8 =>
                 read_address := read_address + 1;
                 o_address <= STD_LOGIC_VECTOR(to_unsigned(read_address, o_address'length));
+                o_en <= '1';
             when S9 =>
                 r2_load <= '1';
+                r2_sel <= '0';
         end case;
     end process;
     

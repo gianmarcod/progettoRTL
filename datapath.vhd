@@ -22,7 +22,6 @@ signal o_reg1 : STD_LOGIC_VECTOR (7 downto 0);
 signal o_reg2 : STD_LOGIC_VECTOR (9 downto 0);
 signal o_reg3 : STD_LOGIC_VECTOR (7 downto 0);
 signal o_reg4 : STD_LOGIC_VECTOR (7 downto 0);
-signal sum : STD_LOGIC_VECTOR(9 downto 0);
 signal mux_reg1 : STD_LOGIC_VECTOR(7 downto 0);
 signal mux_reg2 : STD_LOGIC_VECTOR(1 downto 0);
 signal sub : STD_LOGIC_VECTOR(7 downto 0);
@@ -58,9 +57,6 @@ begin
         mux_reg2 <= "00" when '1',
                     o_reg2(1 downto 0) when '0',
                     "XX" when others;
-
-	--sum <= (mux_reg2 & o_reg2); -- 10 bit
-
 
     process(i_clk, i_rst)
     begin

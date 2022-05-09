@@ -7,7 +7,7 @@ entity project_reti_logiche is
            i_rst : in STD_LOGIC;
            i_start : in STD_LOGIC;
            i_data : in STD_LOGIC_VECTOR (7 downto 0);
-           o_addr : out STD_LOGIC_VECTOR (15 downto 0);
+           o_address : out STD_LOGIC_VECTOR (15 downto 0);
            o_done : out STD_LOGIC;
            o_en : out STD_LOGIC;
            o_we : out STD_LOGIC;
@@ -17,44 +17,48 @@ end project_reti_logiche;
 architecture Behavioral of project_reti_logiche is
 component datapath is
     Port ( i_clk : in STD_LOGIC;
-           i_res : in STD_LOGIC;
+           i_rst : in STD_LOGIC;
            i_data : in STD_LOGIC_VECTOR (7 downto 0);
            o_data : out STD_LOGIC_VECTOR (7 downto 0);
            r1_load : in STD_LOGIC;
            r2_load : in STD_LOGIC;
            r3_load : in STD_LOGIC;
+           r4_load : in STD_LOGIC;
+           r1_sel : in STD_LOGIC;
            r2_sel : in STD_LOGIC;
-           r3_sel : in STD_LOGIC;
            d_sel : in STD_LOGIC;
            o_end : out STD_LOGIC);
 end component;
 signal r1_load : STD_LOGIC;
 signal r2_load : STD_LOGIC;
 signal r3_load : STD_LOGIC;
+signal r4_load : STD_LOGIC;
+signal r1_sel : STD_LOGIC;
 signal r2_sel : STD_LOGIC;
-signal r3_sel : STD_LOGIC;
 signal d_sel : STD_LOGIC;
 signal o_end : STD_LOGIC;
 type S is (S0,S1,S2,S3,S4,S5,S6);
 signal cur_state, next_state : S;
+
 begin
     DATAPATH0: datapath port map(
         i_clk,
-        i_res,
+        i_rst,
         i_data,
         o_data,
         r1_load,
         r2_load,
         r3_load,
+        r4_load,
+        r1_sel,
         r2_sel,
-        r3_sel,
         d_sel,
         o_end
     );
     
-    process(i_clk, i_res)
+    process(i_clk, i_rst)
     begin
-        if(i_res = '1') then
+        if(i_rst = '1') then
             cur_state <= S0;
         elsif i_clk'event and i_clk = '1' then
             cur_state <= next_state;
@@ -99,21 +103,21 @@ begin
         r1_sel <= '0';
         r2_sel <= '0';
         d_sel <= '0';
-        o_addr <= "0000000000000000";
+        o_address <= "0000000000000000";
         o_en <= '0';
         o_we <= '0';
         o_done <= '0';
         case cur_state is
             when S0 =>
             when S1 =>
-                o_addr <= STD_LOGIC_VECTOR(to_unsigned(read_address, o_addr'length));
+                o_address <= STD_LOGIC_VECTOR(to_unsigned(read_address, o_address'length));
                 o_en <= '1';
                 r1_load <= '1';
                 r1_sel <= '0';
                 r2_sel <= '0';
             when S2 =>
                 read_address := read_address + 1;
-                o_addr <= STD_LOGIC_VECTOR(to_unsigned(read_address, o_addr'length));
+                o_address <= STD_LOGIC_VECTOR(to_unsigned(read_address, o_address'length));
                 r1_sel <= '1';
                 r2_load <= '1';
             when S3 =>
@@ -122,13 +126,13 @@ begin
                 r2_sel <= '1';
             when S4 =>
                 d_sel <= '0';
-                o_addr <= STD_LOGIC_VECTOR(to_unsigned(write_address, o_addr'length));
+                o_address <= STD_LOGIC_VECTOR(to_unsigned(write_address, o_address'length));
                 write_address := write_address + 1;
                 o_en <= '1';
                 o_we <= '1';
             when S5 =>
                 d_sel <= '1';
-                o_addr <= STD_LOGIC_VECTOR(to_unsigned(write_address, o_addr'length));
+                o_address <= STD_LOGIC_VECTOR(to_unsigned(write_address, o_address'length));
                 write_address := write_address + 1;
                 o_en <= '1';
                 o_we <= '1';

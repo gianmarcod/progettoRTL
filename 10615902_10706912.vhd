@@ -213,7 +213,6 @@ signal new_write : STD_LOGIC_VECTOR (15 downto 0);
 signal mux_reg1 : STD_LOGIC_VECTOR(7 downto 0);
 signal mux_reg2 : STD_LOGIC_VECTOR(1 downto 0);
 signal sub : STD_LOGIC_VECTOR(7 downto 0);
-signal star : STD_LOGIC;
 
 
 function converter2(A : in STD_LOGIC_VECTOR (3 downto 0))
@@ -321,6 +320,5 @@ begin
     sub <= o_reg1 - "00000001";
     
     o_end <= '1' when (o_reg1 = "00000000") else '0';
-    star <= '1' when (o_reg1 = "00000000") else '0';
 
 end Behavioral;

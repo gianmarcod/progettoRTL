@@ -226,7 +226,6 @@ begin
 return STD_LOGIC_VECTOR(X);
 end;
 
-
 begin
 
     process(i_clk, i_rst)

@@ -103,15 +103,15 @@ begin
             when S5 =>
                 next_state <= S6;
             when S6 =>
-                if o_end = '1' then
-                    next_state <= S7;
-                else
-                    next_state <= S8;
-                end if;
+                next_state <= S8;
             when S7 =>
                 next_state <= S0;
             when S8 =>
-                next_state <= S9;
+                if o_end = '1' then
+                    next_state <= S7;
+                else
+                    next_state <= S9;
+                end if;
             when S9 =>
                 next_state <= S4;
         end case;

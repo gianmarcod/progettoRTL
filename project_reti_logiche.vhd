@@ -24,6 +24,11 @@ component datapath is
            r2_load : in STD_LOGIC;
            r3_load : in STD_LOGIC;
            r4_load : in STD_LOGIC;
+           read_load : in STD_LOGIC;
+           write_load : in STD_LOGIC;
+           rst_addrs : in STD_LOGIC;
+           o_read : inout STD_LOGIC_VECTOR (15 downto 0);
+           o_write : inout STD_LOGIC_VECTOR (15 downto 0);
            r1_sel : in STD_LOGIC;
            r2_sel : in STD_LOGIC;
            d_sel : in STD_LOGIC;
@@ -33,6 +38,11 @@ signal r1_load : STD_LOGIC;
 signal r2_load : STD_LOGIC;
 signal r3_load : STD_LOGIC;
 signal r4_load : STD_LOGIC;
+signal read_load : STD_LOGIC;
+signal write_load : STD_LOGIC;
+signal rst_addrs : STD_LOGIC;
+signal o_read : STD_LOGIC_VECTOR(15 downto 0);
+signal o_write : STD_LOGIC_VECTOR(15 downto 0);
 signal r1_sel : STD_LOGIC;
 signal r2_sel : STD_LOGIC;
 signal d_sel : STD_LOGIC;
@@ -50,6 +60,11 @@ begin
         r2_load,
         r3_load,
         r4_load,
+        read_load,
+        write_load,
+        rst_addrs,
+        o_read,
+        o_write,
         r1_sel,
         r2_sel,
         d_sel,
@@ -103,13 +118,13 @@ begin
     end process;
     
     process(cur_state)
-        variable write_address : INTEGER := 1000;
-        variable read_address : INTEGER := 0;
     begin
         r1_load <= '0';
         r2_load <= '0';
         r3_load <= '0';
         r4_load <= '0';
+        read_load <= '0';
+        write_load <= '0';
         r1_sel <= '0';
         r2_sel <= '0';
         d_sel <= '0';
@@ -117,16 +132,17 @@ begin
         o_en <= '0';
         o_we <= '0';
         o_done <= '0';
+        rst_addrs <= '0';
+        
         case cur_state is
             when S0 =>
-                read_address := 0;
-                write_address := 1000;
+                rst_addrs <= '1';
             when S1 =>
-                o_address <= STD_LOGIC_VECTOR(to_unsigned(read_address, o_address'length));
+                o_address <= o_read;
                 o_en <= '1';
+                read_load <= '1';
             when S2 =>
-                read_address := read_address + 1;
-                o_address <= STD_LOGIC_VECTOR(to_unsigned(read_address, o_address'length));
+                o_address <= o_read;
                 o_en <= '1';
                 r1_sel <= '1';
                 r1_load <= '1';
@@ -138,22 +154,22 @@ begin
                 r4_load <= '1';
             when S5 =>
                 d_sel <= '0';
-                o_address <= STD_LOGIC_VECTOR(to_unsigned(write_address, o_address'length));
-                write_address := write_address + 1;
+                o_address <= o_write;
+                write_load <= '1';
                 o_en <= '1';
                 o_we <= '1';
             when S6 =>
                 d_sel <= '1';
-                o_address <= STD_LOGIC_VECTOR(to_unsigned(write_address, o_address'length));
-                write_address := write_address + 1;
+                o_address <= o_write;
+                write_load <= '1';
                 o_en <= '1';
                 o_we <= '1';
                 r1_load <= '1';
+                read_load <= '1';
             when S7 =>
                 o_done <= '1';
             when S8 =>
-                read_address := read_address + 1;
-                o_address <= STD_LOGIC_VECTOR(to_unsigned(read_address, o_address'length));
+                o_address <= o_read;
                 o_en <= '1';
             when S9 =>
                 r2_load <= '1';

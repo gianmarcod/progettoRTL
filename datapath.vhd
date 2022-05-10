@@ -11,6 +11,11 @@ entity datapath is
            r2_load : in STD_LOGIC;
            r3_load : in STD_LOGIC;
            r4_load : in STD_LOGIC;
+           read_load : in STD_LOGIC;
+           write_load : in STD_LOGIC;
+           rst_addrs : in STD_LOGIC;
+           o_read : inout STD_LOGIC_VECTOR (15 downto 0);
+           o_write : inout STD_LOGIC_VECTOR (15 downto 0);
            r1_sel : in STD_LOGIC;
            r2_sel : in STD_LOGIC;
            d_sel : in STD_LOGIC;
@@ -22,9 +27,12 @@ signal o_reg1 : STD_LOGIC_VECTOR (7 downto 0);
 signal o_reg2 : STD_LOGIC_VECTOR (9 downto 0);
 signal o_reg3 : STD_LOGIC_VECTOR (7 downto 0);
 signal o_reg4 : STD_LOGIC_VECTOR (7 downto 0);
+signal new_read : STD_LOGIC_VECTOR (15 downto 0);
+signal new_write : STD_LOGIC_VECTOR (15 downto 0);
 signal mux_reg1 : STD_LOGIC_VECTOR(7 downto 0);
 signal mux_reg2 : STD_LOGIC_VECTOR(1 downto 0);
 signal sub : STD_LOGIC_VECTOR(7 downto 0);
+signal star : STD_LOGIC;
 
 
 function converter2(A : in STD_LOGIC_VECTOR (3 downto 0))
@@ -52,6 +60,32 @@ begin
             end if;
         end if;
     end process;
+    
+    process(i_clk, i_rst)
+    begin
+        if(i_rst = '1' or rst_addrs = '1') then
+            o_read <= "0000000000000000";
+        elsif i_clk'event and i_clk = '1' then
+            if(read_load = '1') then
+                o_read <= new_read;
+            end if;
+        end if;
+    end process;
+    
+    new_read <= o_read + "0000000000000001";
+    
+    process(i_clk, i_rst)
+    begin
+        if(i_rst = '1' or rst_addrs = '1') then
+            o_write <= "0000001111101000";  -- 1000
+        elsif i_clk'event and i_clk = '1' then
+            if(write_load = '1') then
+                o_write <= new_write;
+            end if;
+        end if;
+    end process;
+    
+    new_write <= o_write + "0000000000000001";
     
     with r2_sel select
         mux_reg2 <= "00" when '1',
@@ -106,5 +140,6 @@ begin
     sub <= o_reg1 - "00000001";
     
     o_end <= '1' when (o_reg1 = "00000000") else '0';
+    star <= '1' when (o_reg1 = "00000000") else '0';
 
 end Behavioral;

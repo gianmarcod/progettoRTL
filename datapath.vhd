@@ -61,7 +61,7 @@ begin
         end if;
     end process;
     
-    process(i_clk, i_rst)
+    process(i_clk, i_rst, rst_addrs)
     begin
         if(i_rst = '1' or rst_addrs = '1') then
             o_read <= "0000000000000000";
@@ -74,7 +74,7 @@ begin
     
     new_read <= o_read + "0000000000000001";
     
-    process(i_clk, i_rst)
+    process(i_clk, i_rst, rst_addrs)
     begin
         if(i_rst = '1' or rst_addrs = '1') then
             o_write <= "0000001111101000";  -- 1000

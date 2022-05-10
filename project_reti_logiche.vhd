@@ -117,7 +117,7 @@ begin
         end case;
     end process;
     
-    process(cur_state)
+    process(cur_state, o_read, o_write)
     begin
         r1_load <= '0';
         r2_load <= '0';

@@ -215,7 +215,7 @@ signal mux_reg2 : STD_LOGIC_VECTOR(1 downto 0);
 signal sub : STD_LOGIC_VECTOR(7 downto 0);
 
 
-function converter2(A : in STD_LOGIC_VECTOR (3 downto 0))
+function converter(A : in STD_LOGIC_VECTOR (3 downto 0))
     return STD_LOGIC_VECTOR is 
     variable X : STD_LOGIC_VECTOR(3 downto 0);
 begin
@@ -277,8 +277,8 @@ begin
             o_reg3 <= "00000000";
         elsif i_clk'event and i_clk = '1' then
             if(r3_load = '1') then
-                o_reg3(7 downto 4) <= converter2(o_reg2(9 downto 6));
-                o_reg3(3 downto 0) <= converter2(o_reg2(7 downto 4));
+                o_reg3(7 downto 4) <= converter(o_reg2(9 downto 6));
+                o_reg3(3 downto 0) <= converter(o_reg2(7 downto 4));
             end if;
         end if;
     end process;
@@ -289,8 +289,8 @@ begin
             o_reg4 <= "00000000";
         elsif i_clk'event and i_clk = '1' then
             if(r4_load = '1') then
-                o_reg4(7 downto 4) <= converter2(o_reg2(5 downto 2));
-                o_reg4(3 downto 0) <= converter2(o_reg2(3 downto 0));
+                o_reg4(7 downto 4) <= converter(o_reg2(5 downto 2));
+                o_reg4(3 downto 0) <= converter(o_reg2(3 downto 0));
             end if;
         end if;
     end process;

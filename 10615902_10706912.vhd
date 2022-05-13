@@ -105,7 +105,9 @@ begin
             when S6 =>
                 next_state <= S8;
             when S7 =>
-                next_state <= S0;
+                if i_start = '0' then
+                    next_state <= S0;
+                end if;
             when S8 =>
                 if o_end = '1' then
                     next_state <= S7;

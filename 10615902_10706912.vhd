@@ -1,3 +1,6 @@
+-- 10615902     -   Gianmarco D'Onofrio
+-- 10706912     -   Guido Baldessari
+
 library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
 use IEEE.NUMERIC_STD.ALL;
@@ -221,10 +224,10 @@ function converter(A : in STD_LOGIC_VECTOR (3 downto 0))
     return STD_LOGIC_VECTOR is 
     variable X : STD_LOGIC_VECTOR(3 downto 0);
 begin
-	X(3) := A(3) xor A(1); -- A XOR C
-	X(2) := A(3) xor A(2) xor A(1); -- A XOR B XOR C
-	X(1) := A(2) xor A(0); -- B XOR D
-	X(0) := A(2) xor A(1) xor A(0); -- B XOR C XOR D
+	X(3) := A(3) xor A(1);             -- A XOR C
+	X(2) := A(3) xor A(2) xor A(1);    -- A XOR B XOR C
+	X(1) := A(2) xor A(0);             -- B XOR D
+	X(0) := A(2) xor A(1) xor A(0);    -- B XOR C XOR D
 return STD_LOGIC_VECTOR(X);
 end;
 
